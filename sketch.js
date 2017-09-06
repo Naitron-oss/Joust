@@ -14,16 +14,16 @@ function setup() {
   bg = loadImage("assets/background.jpg");
   createCanvas(1000, 600);
   player = createSprite(500, 50, 60, 40);
-  player.addAnimation("normalright", "assets/players/readyright.gif");
-  player.addAnimation("normalleft", "assets/players/readyleft.gif");
-  player.addAnimation("runright", "assets/players/runright1.png", "assets/players/runright2.png",
-                      "assets/players/runright3.png", "assets/players/runright4.png");
-  player.addAnimation("runleft", "assets/players/runleft1.png", "assets/players/runleft2.png",
-                      "assets/players/runleft3.png", "assets/players/runleft4.png");
-  player.addAnimation("jumpright", "assets/players/attackright.gif");
-  player.addAnimation("jumpleft", "assets/players/attackleft.gif");
+  player.addAnimation("normalright", "assets/player/readyright.gif");
+  player.addAnimation("normalleft", "assets/player/readyleft.gif");
+  player.addAnimation("runright", "assets/player/runright1.png", "assets/player/runright2.png",
+                      "assets/player/runright3.png", "assets/player/runright4.png");
+  player.addAnimation("runleft", "assets/player/runleft1.png", "assets/player/runleft2.png",
+                      "assets/player/runleft3.png", "assets/player/runleft4.png");
+  player.addAnimation("jumpright", "assets/player/attackright.gif");
+  player.addAnimation("jumpleft", "assets/player/attackleft.gif");
 
-  base = createSprite(500, 592, 700, 26.5);
+  base = createSprite(500, 580, 700, 26.5);
   base.addAnimation("normal", "assets/base.jpg");
 
   platform = createSprite(940, 130, 130, 16);
@@ -43,7 +43,7 @@ function setup() {
 
   platform6 = createSprite(590, 450, 160, 16);
   platform6.addAnimation("normal", "assets/platforms/platform6.png");
-  
+
   platform7 = createSprite(100, 480, 90, 16);
   platform7.addAnimation("normal", "assets/platforms/platform7.png");
 
