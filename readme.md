@@ -1,10 +1,10 @@
-## JS Project Proposal: Joust
+## JS Project Proposal: Bout
 
 ### Background
 
 *Joust*, developed by Williams Electronics and released in 1982, is an arcade game
 set in a far-flung alternate reality in which knights joust one another mounted on flying
-ostriches.
+ostriches. *Bout* will be my interpretation.
 
 Gameplay is simple. There are three buttons—two to move right and left, and one to flap
 your ostrich's wings. If you collide with an enemy, victory is determined by relative
@@ -12,7 +12,7 @@ altitude. Levels are completed when all enemies are cleared away.
 
 ### Functionality and MVP
 
-With this iteration of *Joust*, users will be able to:
+In *Bout*, users will be able to:
 
 - Start, pause, and reset the game.
 - Move and attack enemies.
