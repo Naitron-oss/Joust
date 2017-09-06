@@ -23,28 +23,28 @@ function setup() {
   player.addAnimation("jumpright", "assets/player/attackright.gif");
   player.addAnimation("jumpleft", "assets/player/attackleft.gif");
 
-  base = createSprite(500, 580, 700, 26.5);
+  base = createSprite(500, 580, 700, 30);
   base.addAnimation("normal", "assets/base.jpg");
 
-  platform = createSprite(940, 130, 130, 16);
+  platform = createSprite(940, 130, 130, 15);
   platform.addAnimation("normal", "assets/platforms/platform.png");
 
-  platform2 = createSprite(35, 130, 120, 16);
+  platform2 = createSprite(35, 130, 120, 15);
   platform2.addAnimation("normal", "assets/platforms/platform2.png");
 
-  platform3 = createSprite(120, 350, 250, 16);
+  platform3 = createSprite(120, 350, 250, 15);
   platform3.addAnimation("normal", "assets/platforms/platform3.png");
 
-  platform4 = createSprite(900, 350, 200, 16);
+  platform4 = createSprite(900, 350, 200, 15);
   platform4.addAnimation("normal", "assets/platforms/platform4.png");
 
-  platform5 = createSprite(450, 200, 170, 16);
+  platform5 = createSprite(450, 200, 170, 15);
   platform5.addAnimation("normal", "assets/platforms/platform5.png");
 
-  platform6 = createSprite(590, 450, 160, 16);
+  platform6 = createSprite(590, 450, 160, 15);
   platform6.addAnimation("normal", "assets/platforms/platform6.png");
 
-  platform7 = createSprite(100, 480, 90, 16);
+  platform7 = createSprite(100, 480, 90, 15);
   platform7.addAnimation("normal", "assets/platforms/platform7.png");
 
   platforms = [base, platform, platform2, platform3, platform4,
