@@ -234,9 +234,18 @@ function draw() {
   enemies.forEach((e) => {
     if (e.collide(player)) {
       if (player.position.y < e.position.y - 25) {
-        createDeadEnemy(e.position.x, e.position.y)
+        if (e.velocity.x > 0) {
+          createDeadEnemy(e.position.x, e.position.y, "right")
+        } else {
+          createDeadEnemy(e.position.x, e.position.y, "left")
+        }
         e.remove();
       } else if (e.position.y < player.position.y - 25) {
+        if (player.velocity.x > 0) {
+          createDeadPlayer(player.position.x, player.position.y, "right")
+        } else {
+          createDeadPlayer(player.position.x, player.position.y, "left")
+        }
         player.remove();
       } else {
         if (e.position.x > player.position.x) {
@@ -297,26 +306,50 @@ function enemyJump() {
   }
 }
 
-function createDeadEnemy(x, y) {
+function createDeadEnemy(x, y, z) {
   let e = createSprite(x, y, 60, 40);
   e.addAnimation("painright", "assets/enemycorpse/painright.gif")
   e.addAnimation("painleft", "assets/enemycorpse/painleft.gif")
   e.addAnimation("fallenright", "assets/enemycorpse/fallenright.gif")
   e.addAnimation("fallenleft", "assets/enemycorpse/fallenleft.gif")
 
-  e.changeAnimation("painleft");
+  if (z === "left") {
+    e.changeAnimation("painleft");
+    dead.push([e, "left"]);
+  } else {
+    e.changeAnimation("painright");
+    dead.push([e, "right"]);
+  }
+}
 
-  dead.push(e);
+function createDeadPlayer(x, y, z) {
+  let e = createSprite(x, y, 60, 40);
+  e.addAnimation("painright", "assets/playercorpse/painright.gif")
+  e.addAnimation("painleft", "assets/playercorpse/painleft.gif")
+  e.addAnimation("fallenright", "assets/playercorpse/fallenright.gif")
+  e.addAnimation("fallenleft", "assets/playercorpse/fallenleft.gif")
+
+  if (z === "left") {
+    e.changeAnimation("painleft");
+    dead.push([e, "left"]);
+  } else {
+    e.changeAnimation("painright");
+    dead.push([e, "right"]);
+  }
 }
 
 function deadEnemyFall(d) {
-  d.velocity.y += 0.25;
+  d[0].velocity.y += 0.25;
 
   platforms.forEach((plat) => {
-    if (d.collide(plat)) {
-      d.velocity.y = 0;
-      d.position.y += 10;
-      d.changeAnimation("fallenleft");
+    if (d[0].collide(plat)) {
+      d[0].velocity.y = 0;
+      d[0].position.y += 10;
+      if (d[1] === "left") {
+        d[0].changeAnimation("fallenleft");
+      } else {
+        d[0].changeAnimation("fallenright");
+      }
     }
   });
 }
