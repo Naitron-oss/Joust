@@ -4,6 +4,7 @@ let enemy2;
 let enemy3;
 let enemy4;
 let enemies;
+let dead;
 let coinFlips;
 let base;
 let platform;
@@ -39,6 +40,7 @@ function setup() {
 
   setInterval(enemyJump, 60);
 
+  dead = [];
 
   base = createSprite(500, 580, 700, 30);
   base.addAnimation("normal", "assets/base.jpg");
@@ -201,6 +203,7 @@ function draw() {
   enemies.forEach((e) => {
     if (e.collide(player)) {
       if (player.position.y < e.position.y - 25) {
+        createDeadEnemy(e.position.x, e.position.y)
         e.remove();
       } else if (e.position.y < player.position.y - 25) {
         player.remove();
@@ -215,6 +218,13 @@ function draw() {
       }
     }
   });
+
+  if (dead.length > 0) {
+    dead.forEach((d) => {
+      deadEnemyFall(d);
+    });
+  }
+
 }
 
 function createEnemy(x, y) {
@@ -249,8 +259,28 @@ function enemyJump() {
 
 function createDeadEnemy(x, y) {
   let e = createSprite(x, y, 60, 40);
-  e.addAnimation("painright", "assets/enemycorpse/painright")
-  e.addAnimation("painleft", "assets/enemycorpse/painleft")
-  e.addAnimation("fallenright", "assets/enemycorpse/fallenright")
-  e.addAnimation("fallenleft", "assets/enemycorpse/fallenleft")
+  e.addAnimation("painright", "assets/enemycorpse/painright.gif")
+  e.addAnimation("painleft", "assets/enemycorpse/painleft.gif")
+  e.addAnimation("fallenright", "assets/enemycorpse/fallenright.gif")
+  e.addAnimation("fallenleft", "assets/enemycorpse/fallenleft.gif")
+
+  e.changeAnimation("painleft");
+
+  dead.push(e);
+}
+
+function deadEnemyFall(d) {
+  d.velocity.y += 0.25;
+
+  platforms.forEach((plat) => {
+    if (d.collide(plat)) {
+      d.velocity.y = 0;
+      d.position.y += 10;
+      d.changeAnimation("fallenleft");
+    }
+  });
+}
+
+function deadDecompose() {
+
 }
