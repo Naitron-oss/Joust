@@ -3,6 +3,8 @@ let enemy;
 let enemy2;
 let enemy3;
 let enemy4;
+let enemy5;
+let enemy6;
 let enemies;
 let dead;
 let coinFlips;
@@ -21,7 +23,7 @@ let playerStatus;
 function setup() {
   bg = loadImage("assets/background.jpg");
   createCanvas(1000, 600);
-  player = createSprite(500, 50, 60, 40);
+  player = createSprite(450, 150, 60, 40);
   player.addAnimation("normalright", "assets/player/readyright.gif");
   player.addAnimation("normalleft", "assets/player/readyleft.gif");
   player.addAnimation("runright", "assets/player/runright1.png", "assets/player/runright2.png",
@@ -31,14 +33,19 @@ function setup() {
   player.addAnimation("jumpright", "assets/player/attackright.gif");
   player.addAnimation("jumpleft", "assets/player/attackleft.gif");
 
-  enemy = createEnemy(900, 320);
-  enemy2 = createEnemy(950, 70);
-  enemy3 = createEnemy(50, 70);
-  enemy4 = createEnemy(100, 320);
-  enemies = [enemy, enemy2, enemy3, enemy4];
-  coinFlips = [Math.random(), Math.random(), Math.random(), Math.random()];
+  enemy1 = createEnemy();
+  enemy2 = createEnemy();
+  enemy3 = createEnemy();
+  enemy4 = createEnemy();
+  enemy5 = createEnemy();
+  enemy6 = createEnemy();
 
-  setInterval(enemyJump, 60);
+  enemies = [enemy1, enemy2, enemy3, enemy4, enemy5, enemy6];
+  coinFlips = [Math.random(), Math.random(), Math.random(), Math.random(),
+               Math.random(), Math.random()];
+
+  setInterval(enemyJump, 36);
+  setInterval(reroll, 1000);
 
   dead = [];
 
@@ -131,11 +138,35 @@ function draw() {
 
 
   coinFlips.forEach((c, i) => {
-    if (c < 0.5) {
+    if (c < 0.1) {
+      enemies[i].velocity.x += 0.25;
+      enemies[i].changeAnimation("runright");
+    } else if (c < 0.2) {
+      enemies[i].velocity.x += 0.35;
+      enemies[i].changeAnimation("runright");
+    } else if (c < 0.3) {
+      enemies[i].velocity.x += 0.45;
+      enemies[i].changeAnimation("runright");
+    } else if (c < 0.4) {
       enemies[i].velocity.x += 0.5;
       enemies[i].changeAnimation("runright");
-    } else if (c >= 0.5) {
+    } else if (c < 0.5) {
+      enemies[i].velocity.x += 0.55;
+      enemies[i].changeAnimation("runright");
+    } else if (c < 0.6) {
+      enemies[i].velocity.x -= 0.25;
+      enemies[i].changeAnimation("runleft");
+    } else if (c < 0.7) {
+      enemies[i].velocity.x -= 0.35;
+      enemies[i].changeAnimation("runleft");
+    } else if (c < 0.8) {
+      enemies[i].velocity.x -= 0.45;
+      enemies[i].changeAnimation("runleft");
+    } else if (c < 0.9) {
       enemies[i].velocity.x -= 0.5;
+      enemies[i].changeAnimation("runleft");
+    } else if (c < 1) {
+      enemies[i].velocity.x -= 0.55;
       enemies[i].changeAnimation("runleft");
     }
   });
@@ -154,7 +185,7 @@ function draw() {
   }
 
   if (keyWentDown(" ") || keyWentDown(UP_ARROW) || keyWentDown("w")) {
-    player.velocity.y -= 7;
+    player.velocity.y -= 9;
     if (playerStatus === "right") {
       player.changeAnimation("jumpright");
     } else if (playerStatus === "left") {
@@ -227,8 +258,8 @@ function draw() {
 
 }
 
-function createEnemy(x, y) {
-  let e = createSprite(x, y, 60, 40);
+function createEnemy() {
+  let e = createSprite(600, 400, 60, 40);
   e.addAnimation("normalright", "assets/enemy/readyright.gif");
   e.addAnimation("runright", "assets/enemy/runright1.png", "assets/enemy/runright2.png",
                 "assets/enemy/runright3.png", "assets/enemy/runright4.png");
@@ -241,10 +272,19 @@ function createEnemy(x, y) {
   return e;
 }
 
+function reroll() {
+  let randomchange = Math.floor(Math.random() * 6);
+  let sleep = Math.random() * (3000)
+
+  setTimeout(sleep);
+
+  coinFlips[randomchange] = Math.random();
+}
+
 function enemyJump() {
   let min = Math.ceil(0);
   let max = Math.floor(4);
-  let e = Math.floor(Math.random() * 4);
+  let e = Math.floor(Math.random() * 6);
 
   if (enemies[e].position.y < 300) {
     let sleep = Math.random() * (80 - 50) + 50;
@@ -253,7 +293,7 @@ function enemyJump() {
   } else {
     let sleep = Math.random() * (80 - 40) + 40;
     setTimeout(sleep);
-    enemies[e].velocity.y -= 10
+    enemies[e].velocity.y -= 12
   }
 }
 
@@ -279,8 +319,4 @@ function deadEnemyFall(d) {
       d.changeAnimation("fallenleft");
     }
   });
-}
-
-function deadDecompose() {
-
 }
