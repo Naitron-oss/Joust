@@ -1,0 +1,75 @@
+body {
+  padding: 0;
+  margin: 0;
+  background-color: black;
+}
+
+.body-container {
+  display: flex;
+  justify-content: center;
+}
+
+.items-container {
+  width: 1400px;
+  margin-top: 75px;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-around;
+}
+
+canvas {
+  border: 5px solid lightgrey;
+  margin-top: 50px;
+  margin: 20px;
+}
+
+h1, h2, h3, h4, h5, p {
+  font-family: monospace;
+  font-weight: lighter;
+  color: white;
+}
+
+.rules-container {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.how-to-play {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #474747;
+  padding-left: 15px;
+  padding-bottom: 15px;
+  border: 5px solid lightgrey;
+}
+
+strong {
+  color: red;
+}
+
+.icons {
+	position: fixed;
+}
+
+.icon-container {
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+.icon {
+	height: 30px;
+	margin: 5px;
+}
+
+.revelation { display: inline-block; transition: transform 2s; -webkit-transition: transform 2s; }
+.revelation .secret { display: none; }
+.revelation:hover, .revelation:active, .revelation:focus {
+	cursor: pointer;
+	-ms-transform: scale(1.25,1.25); /* IE 9 */
+	-webkit-transform: scale(1.25,1.25); /* Safari */
+	transform: scale(1.25,1.25); /* Standard syntax */
+}
+.revelation:hover .secret, .revelation:active .secret, .revelation:focus .secret { display: block; }

@@ -1,3 +1,4 @@
+let cnv;
 let player;
 let enemy;
 let enemy2;
@@ -19,19 +20,16 @@ let platform7;
 let ciel;
 let platforms;
 let playerStatus;
+let scoreText;
+let score = 0;
+let hasStarted = false;
+let paused = false;
+let turnCount = 0;
 
 function setup() {
   bg = loadImage("assets/background.jpg");
-  createCanvas(1000, 600);
-  player = createSprite(450, 150, 60, 40);
-  player.addAnimation("normalright", "assets/player/readyright.gif");
-  player.addAnimation("normalleft", "assets/player/readyleft.gif");
-  player.addAnimation("runright", "assets/player/runright1.png", "assets/player/runright2.png",
-                      "assets/player/runright3.png", "assets/player/runright4.png");
-  player.addAnimation("runleft", "assets/player/runleft1.png", "assets/player/runleft2.png",
-                      "assets/player/runleft3.png", "assets/player/runleft4.png");
-  player.addAnimation("jumpright", "assets/player/attackright.gif");
-  player.addAnimation("jumpleft", "assets/player/attackleft.gif");
+  cnv = createCanvas(1000, 600);
+  cnv.parent('sketch-holder');
 
   enemy1 = createEnemy();
   enemy2 = createEnemy();
@@ -44,7 +42,7 @@ function setup() {
   coinFlips = [Math.random(), Math.random(), Math.random(), Math.random(),
                Math.random(), Math.random()];
 
-  setInterval(enemyJump, 36);
+  setInterval(enemyJump, 133);
   setInterval(reroll, 1000);
 
   dead = [];
@@ -80,195 +78,317 @@ function setup() {
 }
 
 function draw() {
-  background(bg);
-  drawSprites();
 
-  //BOARD SETUP
+  if (hasStarted === true) {
+    background(bg);
+    drawSprites();
 
-  platforms.forEach((plat) => {
-    if (player.collide(plat)) {
-      player.velocity.y = 0;
-      if (playerStatus === "right") {
-        player.changeAnimation("normalright");
-      } else if (playerStatus === "left") {
-        player.changeAnimation("normalleft");
-      }
-    };
-  });
+    textSize(16);
+    textFont("courier");
+    fill(255, 255, 255);
+    let scoreText = text("Enemies Bested: " + score, 810, 30);
 
-  //ENEMY BEHAVIOR
+    if (paused === true) {
+      textSize(30);
+      textFont("courier");
+      fill(255, 255, 255);
+      let pauseText = text("Paused", 450, 285);
+    }
 
-  enemies.forEach((e) => {
-    e.velocity.y += 0.4;
-    e.maxSpeed = 3.5;
-  });
+    //BOARD SETUP
 
-  enemies.forEach((e) => {
     platforms.forEach((plat) => {
-      if (e.collide(plat)) {
-        if ((e.position.x < plat.position.x - (plat.originalWidth / 2)) ||
-            (e.position.x > plat.position.x + (plat.originalWidth / 2))) {
-          e.bounce(plat);
-          e.velocity.y += 0.4;
-        } else
-        if (e.position.y < plat.position.y - 5) {
-          e.velocity.y = 0;
-        } else {
-          e.bounce(plat);
+      if (player.collide(plat)) {
+        player.velocity.y = 0;
+        if (playerStatus === "right") {
+          player.changeAnimation("normalright");
+        } else if (playerStatus === "left") {
+          player.changeAnimation("normalleft");
         }
       };
     });
-  });
 
-  enemies.forEach((e) => {
-    if (e.position.x < 0) {
-      e.position.x = 1000;
+    //ENEMY BEHAVIOR
+
+    enemies.forEach((e) => {
+      e.velocity.y += 0.3;
+      e.maxSpeed = 4;
+    });
+
+    enemies.forEach((e) => {
+      platforms.forEach((plat) => {
+        if (e.collide(plat)) {
+          if ((e.position.x < plat.position.x - (plat.originalWidth / 2)) ||
+              (e.position.x > plat.position.x + (plat.originalWidth / 2))) {
+            e.bounce(plat);
+            e.velocity.y += 0.4;
+          } else
+          if (e.position.y < plat.position.y - 5) {
+            e.velocity.y = 0;
+          } else {
+            e.bounce(plat);
+          }
+        };
+      });
+    });
+
+    enemies.forEach((e) => {
+      if (e.position.x < 0) {
+        e.position.x = 1000;
+      }
+
+      if (e.position.x > 1000 ) {
+        e.position.x = 0;
+      }
+    })
+
+    enemies.forEach((e) => {
+      if (e.position.y > 550) {
+        e.velocity.y -= 7;
+      }
+    })
+
+
+    coinFlips.forEach((c, i) => {
+      if (enemies[i] === undefined) {
+        return null
+      } else if (c < 0.1) {
+        enemies[i].velocity.x += 0.20;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.2) {
+        enemies[i].velocity.x += 0.30;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.3) {
+        enemies[i].velocity.x += 0.35;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.4) {
+        enemies[i].velocity.x += 0.40;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.5) {
+        enemies[i].velocity.x += 0.45;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.6) {
+        enemies[i].velocity.x -= 0.20;
+        enemies[i].changeAnimation("runleft");
+      } else if (c < 0.7) {
+        enemies[i].velocity.x -= 0.30;
+        enemies[i].changeAnimation("runleft");
+      } else if (c < 0.8) {
+        enemies[i].velocity.x -= 0.35;
+        enemies[i].changeAnimation("runleft");
+      } else if (c < 0.9) {
+        enemies[i].velocity.x -= 0.40;
+        enemies[i].changeAnimation("runleft");
+      } else if (c < 1) {
+        enemies[i].velocity.x -= 0.45;
+        enemies[i].changeAnimation("runleft");
+      }
+    });
+
+    //PLAYER MOVEMENT, CONTROLS
+
+    player.velocity.y += 0.10;
+    player.maxSpeed = 4.5;
+
+    if (player.position.x < 0) {
+      player.position.x = 1000;
     }
 
-    if (e.position.x > 1000 ) {
-      e.position.x = 0;
+    if (player.position.x > 1000 ) {
+      player.position.x = 0;
     }
-  })
 
-  enemies.forEach((e) => {
-    if (e.position.y > 550) {
-      e.velocity.y -= 7;
-    }
-  })
-
-
-  coinFlips.forEach((c, i) => {
-    if (c < 0.1) {
-      enemies[i].velocity.x += 0.25;
-      enemies[i].changeAnimation("runright");
-    } else if (c < 0.2) {
-      enemies[i].velocity.x += 0.35;
-      enemies[i].changeAnimation("runright");
-    } else if (c < 0.3) {
-      enemies[i].velocity.x += 0.45;
-      enemies[i].changeAnimation("runright");
-    } else if (c < 0.4) {
-      enemies[i].velocity.x += 0.5;
-      enemies[i].changeAnimation("runright");
-    } else if (c < 0.5) {
-      enemies[i].velocity.x += 0.55;
-      enemies[i].changeAnimation("runright");
-    } else if (c < 0.6) {
-      enemies[i].velocity.x -= 0.25;
-      enemies[i].changeAnimation("runleft");
-    } else if (c < 0.7) {
-      enemies[i].velocity.x -= 0.35;
-      enemies[i].changeAnimation("runleft");
-    } else if (c < 0.8) {
-      enemies[i].velocity.x -= 0.45;
-      enemies[i].changeAnimation("runleft");
-    } else if (c < 0.9) {
-      enemies[i].velocity.x -= 0.5;
-      enemies[i].changeAnimation("runleft");
-    } else if (c < 1) {
-      enemies[i].velocity.x -= 0.55;
-      enemies[i].changeAnimation("runleft");
-    }
-  });
-
-  //PLAYER MOVEMENT, CONTROLS
-
-  player.velocity.y += 0.3;
-  player.maxSpeed = 4.5;
-
-  if (player.position.x < 0) {
-    player.position.x = 1000;
-  }
-
-  if (player.position.x > 1000 ) {
-    player.position.x = 0;
-  }
-
-  if (keyWentDown(" ") || keyWentDown(UP_ARROW) || keyWentDown("w")) {
-    player.velocity.y -= 9;
-    if (playerStatus === "right") {
-      player.changeAnimation("jumpright");
-    } else if (playerStatus === "left") {
-      player.changeAnimation("jumpleft");
-    }
-  };
-
-  if (keyWentDown("d") || keyWentDown(RIGHT_ARROW)) {
-    playerStatus = "right";
-  };
-
-  if (keyDown("d") || keyDown(RIGHT_ARROW)) {
-    player.velocity.x += 0.5;
-    player.changeAnimation("runright")
-  };
-
-  if (keyWentDown("a") || keyWentDown(LEFT_ARROW)) {
-    playerStatus = "left";
-  };
-
-  if (keyDown("a") || keyDown(LEFT_ARROW)) {
-    player.velocity.x -= 0.5;
-    player.changeAnimation("runleft")
-  };
-
-  if (keyWentUp("a") || keyWentUp("d") ||
-  keyWentUp(LEFT_ARROW) || keyWentUp(RIGHT_ARROW)) {
-    player.velocity.x = 0;
-    if (playerStatus === "right") {
-      if (player.velocity.y) {
+    if (keyWentDown(" ") || keyWentDown(UP_ARROW) || keyWentDown("w")) {
+      player.velocity.y -= 9;
+      if (playerStatus === "right") {
         player.changeAnimation("jumpright");
-      } else {
-        player.changeAnimation("runright");
-      }
-    } else if (playerStatus === "left") {
-      if (player.velocity.y) {
+      } else if (playerStatus === "left") {
         player.changeAnimation("jumpleft");
-      } else {
-        player.changeAnimation("runleft");
       }
-    }
-  };
+    };
 
-  // COMBAT
+    if (keyWentDown("d") || keyWentDown(RIGHT_ARROW)) {
+      playerStatus = "right";
+    };
 
-  enemies.forEach((e) => {
-    if (e.collide(player)) {
-      if (player.position.y < e.position.y - 25) {
-        if (e.velocity.x > 0) {
-          createDeadEnemy(e.position.x, e.position.y, "right")
+    if (keyDown("d") || keyDown(RIGHT_ARROW)) {
+      player.velocity.x += 0.4;
+      player.changeAnimation("runright")
+    };
+
+    if (keyWentDown("a") || keyWentDown(LEFT_ARROW)) {
+      playerStatus = "left";
+    };
+
+    if (keyDown("a") || keyDown(LEFT_ARROW)) {
+      player.velocity.x -= 0.4;
+      player.changeAnimation("runleft")
+    };
+
+    if (keyWentUp("a") || keyWentUp("d") ||
+    keyWentUp(LEFT_ARROW) || keyWentUp(RIGHT_ARROW)) {
+      player.velocity.x = 0;
+      if (playerStatus === "right") {
+        if (player.velocity.y) {
+          player.changeAnimation("jumpright");
         } else {
-          createDeadEnemy(e.position.x, e.position.y, "left")
+          player.changeAnimation("runright");
         }
-        e.remove();
-      } else if (e.position.y < player.position.y - 25) {
-        if (player.velocity.x > 0) {
-          createDeadPlayer(player.position.x, player.position.y, "right")
+      } else if (playerStatus === "left") {
+        if (player.velocity.y) {
+          player.changeAnimation("jumpleft");
         } else {
-          createDeadPlayer(player.position.x, player.position.y, "left")
-        }
-        player.remove();
-      } else {
-        if (e.position.x > player.position.x) {
-          e.velocity.x += 40;
-          player.velocity.x -= 40;
-        } else {
-          e.velocity.x -= 40;
-          player.velocity.x += 40;
+          player.changeAnimation("runleft");
         }
       }
-    }
-  });
+    };
 
-  if (dead.length > 0) {
-    dead.forEach((d) => {
-      deadEnemyFall(d);
+    // COMBAT
+
+    enemies.forEach((e, i) => {
+      if (e.collide(player)) {
+        if (player.position.y < e.position.y - 25) {
+          if (e.velocity.x > 0) {
+            createDeadEnemy(e.position.x, e.position.y, "right")
+          } else {
+            createDeadEnemy(e.position.x, e.position.y, "left")
+          }
+          setTimeout(clearDead, 7000);
+          score += 1;
+          e.remove();
+          enemies.splice(i, 1);
+        } else if (e.position.y < player.position.y - 25) {
+          if (player.velocity.x > 0) {
+            createDeadPlayer(player.position.x, player.position.y, "right");
+          } else {
+            createDeadPlayer(player.position.x, player.position.y, "left");
+          }
+          player.remove();
+          setTimeout(clearDead, 2000);
+          setTimeout(restart, 3000);
+        } else {
+          if (e.position.x > player.position.x) {
+            e.velocity.x += 40;
+            player.velocity.x -= 40;
+          } else {
+            e.velocity.x -= 40;
+            player.velocity.x += 40;
+          }
+        }
+      }
+    });
+
+    if (dead.length > 0) {
+      dead.forEach((d) => {
+        deadEnemyFall(d);
+      });
+    }
+  } else {
+    background(bg);
+    drawSprites();
+
+    textSize(16);
+    textFont("courier");
+    fill(255, 255, 255);
+    if (turnCount === 0) {
+      let scoreText = text("Click to Start", 810, 30);
+    } else {
+      let scoreText = text("Click to Try Again", 810, 30);
+    }
+
+    textSize(50);
+    textFont("courier");
+    fill(255, 255, 255);
+    let titleCard = text("Bout", 440, 270);
+
+    textSize(24);
+    textFont("courier");
+    fill(255, 255, 255);
+    let nameTag = text("~a game by reed gaines~", 330, 310);
+
+    //ENEMY BEHAVIOR
+
+    enemies.forEach((e) => {
+      e.velocity.y += 0.3;
+      e.maxSpeed = 4;
+    });
+
+    enemies.forEach((e) => {
+      platforms.forEach((plat) => {
+        if (e.collide(plat)) {
+          if ((e.position.x < plat.position.x - (plat.originalWidth / 2)) ||
+              (e.position.x > plat.position.x + (plat.originalWidth / 2))) {
+            e.bounce(plat);
+            e.velocity.y += 0.4;
+          } else
+          if (e.position.y < plat.position.y - 5) {
+            e.velocity.y = 0;
+          } else {
+            e.bounce(plat);
+          }
+        };
+      });
+    });
+
+    enemies.forEach((e) => {
+      if (e.position.x < 0) {
+        e.position.x = 1000;
+      }
+
+      if (e.position.x > 1000 ) {
+        e.position.x = 0;
+      }
+    })
+
+    enemies.forEach((e) => {
+      if (e.position.y > 550) {
+        e.velocity.y -= 7;
+      }
+    })
+
+
+    coinFlips.forEach((c, i) => {
+      if (enemies[i] === undefined) {
+        return null
+      } else if (c < 0.1) {
+        enemies[i].velocity.x += 0.20;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.2) {
+        enemies[i].velocity.x += 0.30;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.3) {
+        enemies[i].velocity.x += 0.35;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.4) {
+        enemies[i].velocity.x += 0.40;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.5) {
+        enemies[i].velocity.x += 0.45;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.6) {
+        enemies[i].velocity.x -= 0.20;
+        enemies[i].changeAnimation("runleft");
+      } else if (c < 0.7) {
+        enemies[i].velocity.x -= 0.30;
+        enemies[i].changeAnimation("runleft");
+      } else if (c < 0.8) {
+        enemies[i].velocity.x -= 0.35;
+        enemies[i].changeAnimation("runleft");
+      } else if (c < 0.9) {
+        enemies[i].velocity.x -= 0.40;
+        enemies[i].changeAnimation("runleft");
+      } else if (c < 1) {
+        enemies[i].velocity.x -= 0.45;
+        enemies[i].changeAnimation("runleft");
+      }
     });
   }
 
+
 }
 
-function createEnemy() {
-  let e = createSprite(600, 400, 60, 40);
+function createEnemy(x = 600, y = 400) {
+  let e = createSprite(x, y, 60, 40);
   e.addAnimation("normalright", "assets/enemy/readyright.gif");
   e.addAnimation("runright", "assets/enemy/runright1.png", "assets/enemy/runright2.png",
                 "assets/enemy/runright3.png", "assets/enemy/runright4.png");
@@ -282,28 +402,23 @@ function createEnemy() {
 }
 
 function reroll() {
-  let randomchange = Math.floor(Math.random() * 6);
-  let sleep = Math.random() * (3000)
-
-  setTimeout(sleep);
-
+  let randomchange = Math.floor(Math.random() * enemies.length);
   coinFlips[randomchange] = Math.random();
 }
 
 function enemyJump() {
-  let min = Math.ceil(0);
-  let max = Math.floor(4);
-  let e = Math.floor(Math.random() * 6);
-
-  if (enemies[e].position.y < 300) {
-    let sleep = Math.random() * (80 - 50) + 50;
-    setTimeout(sleep);
-    enemies[e].velocity.y -= 8
-  } else {
-    let sleep = Math.random() * (80 - 40) + 40;
-    setTimeout(sleep);
-    enemies[e].velocity.y -= 12
-  }
+  enemies.forEach((e) => {
+    coin = Math.random();
+    if (e.position.y < 300) {
+      if (coin < 0.38) {
+        e.velocity.y -= 8
+      }
+    } else {
+      if (coin < 0.44) {
+        e.velocity.y -= 8
+      }
+    }
+  })
 }
 
 function createDeadEnemy(x, y, z) {
@@ -331,10 +446,10 @@ function createDeadPlayer(x, y, z) {
 
   if (z === "left") {
     e.changeAnimation("painleft");
-    dead.push([e, "left"]);
+    dead.push([e, "left", "player"]);
   } else {
     e.changeAnimation("painright");
-    dead.push([e, "right"]);
+    dead.push([e, "right", "player"]);
   }
 }
 
@@ -352,4 +467,55 @@ function deadEnemyFall(d) {
       }
     }
   });
+}
+
+function clearDead() {
+  if (dead.length > 0) {
+    if (dead[0].length === 2) {
+      dead[0][0].remove();
+      spawnEnemy(dead[0][0].position.x, dead[0][0].position.y);
+      dead.shift();
+    }
+    else {
+      dead[0][0].remove();
+      dead.shift();
+    }
+  }
+}
+
+function spawnEnemy(x, y) {
+  if (enemies.length < 6) {
+    let nextEnemy = createEnemy(x, y);
+    enemies.push(nextEnemy);
+  }
+}
+
+function mousePressed() {
+  if (hasStarted === false) {
+    player = createSprite(450, 150, 60, 40);
+    player.addAnimation("normalright", "assets/player/readyright.gif");
+    player.addAnimation("normalleft", "assets/player/readyleft.gif");
+    player.addAnimation("runright", "assets/player/runright1.png", "assets/player/runright2.png",
+                        "assets/player/runright3.png", "assets/player/runright4.png");
+    player.addAnimation("runleft", "assets/player/runleft1.png", "assets/player/runleft2.png",
+                        "assets/player/runleft3.png", "assets/player/runleft4.png");
+    player.addAnimation("jumpright", "assets/player/attackright.gif");
+    player.addAnimation("jumpleft", "assets/player/attackleft.gif");
+    hasStarted = true;
+  } else {
+    if (paused === false) {
+      paused = true;
+      noLoop();
+    } else {
+      paused = false;
+      loop();
+    }
+  }
+}
+
+
+function restart() {
+  hasStarted = false;
+  turnCount += 1;
+  score = 0;
 }
