@@ -43,7 +43,7 @@ function setup() {
                Math.random(), Math.random()];
 
   setInterval(enemyJump, 133);
-  setInterval(reroll, 1000);
+  setInterval(reroll, 700);
 
   dead = [];
 
@@ -264,7 +264,6 @@ function draw() {
             createDeadPlayer(player.position.x, player.position.y, "left");
           }
           player.remove();
-          setTimeout(clearDead, 2000);
           setTimeout(restart, 3000);
         } else {
           if (e.position.x > player.position.x) {
@@ -282,7 +281,24 @@ function draw() {
       dead.forEach((d) => {
         deadEnemyFall(d);
       });
+
+      dead.forEach((d) => {
+        if (d[0].velocity.y === 0) {
+          if (d[0].collide(player)) {
+            let dead_idx = dead.indexOf(d);
+            d[0].remove();
+            dead.splice(dead_idx, dead_idx + 1);
+            console.log(dead.length)
+            console.log(enemies.length)
+          }
+        }
+      })
     }
+
+    if (enemies.length === 0 && dead.length === 0) {
+      setTimeout(nextLevel, 2000);
+    }
+
   } else {
     background(bg);
     drawSprites();
@@ -483,7 +499,7 @@ function clearDead() {
   }
 }
 
-function spawnEnemy(x, y) {
+function spawnEnemy(x = 600, y = 400) {
   if (enemies.length < 6) {
     let nextEnemy = createEnemy(x, y);
     enemies.push(nextEnemy);
@@ -516,6 +532,15 @@ function mousePressed() {
 
 function restart() {
   hasStarted = false;
+  while (enemies.length < 6) {
+    spawnEnemy();
+  }
   turnCount += 1;
   score = 0;
+}
+
+function nextLevel() {
+  while (enemies.length < 6) {
+    spawnEnemy();
+  }
 }
