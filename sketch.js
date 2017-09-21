@@ -42,7 +42,7 @@ function setup() {
   coinFlips = [Math.random(), Math.random(), Math.random(), Math.random(),
                Math.random()];
 
-  setInterval(enemyJump, 138);
+  setInterval(enemyJump, 140);
   setInterval(reroll, 500);
 
   dead = [];
@@ -466,16 +466,16 @@ function enemyJump() {
   enemies.forEach((e) => {
     coin = Math.random();
     if (e.position.y < 200) {
-      if (coin < 0.34) {
+      if (coin < 0.30) {
         e.velocity.y -= 8
       }
     } else if (e.position.y < 400) {
-      if (coin < 0.4) {
-        e.velocity.y -= 8
+      if (coin < 0.45) {
+        e.velocity.y -= 10
       }
     } else {
-      if (coin < 0.5) {
-        e.velocity.y -= 8
+      if (coin < 0.55) {
+        e.velocity.y -= 12
       }
     }
   })
