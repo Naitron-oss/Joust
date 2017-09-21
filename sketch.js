@@ -5,8 +5,6 @@ let enemy2;
 let enemy3;
 let enemy4;
 let enemy5;
-let enemy6;
-let enemy7;
 let enemies;
 let dead;
 let coinFlips;
@@ -39,15 +37,13 @@ function setup() {
   enemy3 = createEnemy();
   enemy4 = createEnemy();
   enemy5 = createEnemy();
-  enemy6 = createEnemy();
-  enemy7 = createEnemy();
 
-  enemies = [enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, enemy7];
+  enemies = [enemy1, enemy2, enemy3, enemy4, enemy5];
   coinFlips = [Math.random(), Math.random(), Math.random(), Math.random(),
-               Math.random(), Math.random(), Math.random()];
+               Math.random()];
 
-  setInterval(enemyJump, 137);
-  setInterval(reroll, 700);
+  setInterval(enemyJump, 138);
+  setInterval(reroll, 500);
 
   dead = [];
 
@@ -139,7 +135,7 @@ function draw() {
     //PLAYER MOVEMENT & CONTROLS
 
     player.velocity.y += 0.23;
-    player.maxSpeed = 5.5;
+    player.maxSpeed = 5;
 
     if (player.position.x < 0) {
       player.position.x = 1000;
@@ -199,7 +195,7 @@ function draw() {
 
     enemies.forEach((e) => {
       e.velocity.y += 0.3;
-      e.maxSpeed = 4.5;
+      e.maxSpeed = 5;
     });
 
     enemies.forEach((e) => {
@@ -469,12 +465,16 @@ function sleep(ms) {
 function enemyJump() {
   enemies.forEach((e) => {
     coin = Math.random();
-    if (e.position.y < 300) {
-      if (coin < 0.38) {
+    if (e.position.y < 200) {
+      if (coin < 0.34) {
+        e.velocity.y -= 8
+      }
+    } else if (e.position.y < 400) {
+      if (coin < 0.4) {
         e.velocity.y -= 8
       }
     } else {
-      if (coin < 0.44) {
+      if (coin < 0.5) {
         e.velocity.y -= 8
       }
     }
@@ -490,26 +490,26 @@ function reroll() {
 //ENEMY BIRTH/DEATH FUNCTIONS
 
 function createEnemy(x = 600, y = 400) {
-  let e = createSprite(x, y, 60, 40);
+  let e = createSprite(x, y, 80, 53);
 
-  e.addAnimation("normalright", "assets/enemy/readyright.gif");
+  e.addAnimation("normalright", "assets/enemy/readyright.png");
   e.addAnimation("runright", "assets/enemy/runright1.png", "assets/enemy/runright2.png",
                 "assets/enemy/runright3.png", "assets/enemy/runright4.png");
-  e.addAnimation("jumpright", "assets/enemy/attackright.gif");
-  e.addAnimation("normalleft", "assets/enemy/readyleft.gif");
+  e.addAnimation("jumpright", "assets/enemy/attackright.png");
+  e.addAnimation("normalleft", "assets/enemy/readyleft.png");
   e.addAnimation("runleft", "assets/enemy/runleft1.png", "assets/enemy/runleft2.png",
                 "assets/enemy/runleft3.png", "assets/enemy/runleft4.png");
-  e.addAnimation("jumpleft", "assets/enemy/attackleft.gif");
+  e.addAnimation("jumpleft", "assets/enemy/attackleft.png");
 
   return e;
 }
 
 function createDeadEnemy(x, y, z, p) {
-  let e = createSprite(x, y, 60, 40);
-  e.addAnimation("painright", "assets/enemycorpse/painright.gif")
-  e.addAnimation("painleft", "assets/enemycorpse/painleft.gif")
-  e.addAnimation("fallenright", "assets/enemycorpse/fallenright.gif")
-  e.addAnimation("fallenleft", "assets/enemycorpse/fallenleft.gif")
+  let e = createSprite(x, y, 80, 53);
+  e.addAnimation("painright", "assets/enemycorpse/painright.png")
+  e.addAnimation("painleft", "assets/enemycorpse/painleft.png")
+  e.addAnimation("fallenright", "assets/enemycorpse/fallenright.png")
+  e.addAnimation("fallenleft", "assets/enemycorpse/fallenleft.png")
   e.addAnimation("blinkleft", "assets/playercorpse/fallenleft.gif")
   e.addAnimation("blinkright", "assets/playercorpse/fallenright.gif")
   let fullE = [e];
@@ -603,7 +603,7 @@ async function clearDead(e, p) {
 }
 
 function spawnEnemy(x = 600, y = 400) {
-  if (enemies.length < 7) {
+  if (enemies.length < 5) {
     let nextEnemy = createEnemy(x, y);
     enemies.push(nextEnemy);
   }
@@ -611,7 +611,10 @@ function spawnEnemy(x = 600, y = 400) {
 
 function mousePressed() {
   if (hasStarted === false) {
-    player = createSprite(450, 150, 60, 40);
+    if (player) {
+      player.remove();
+    }
+    player = createSprite(450, 150, 80, 53);
     player.addAnimation("normalright", "assets/player/readyright.gif");
     player.addAnimation("normalleft", "assets/player/readyleft.gif");
     player.addAnimation("runright", "assets/player/runright1.png", "assets/player/runright2.png",
@@ -633,7 +636,7 @@ function mousePressed() {
 }
 
 function createDeadPlayer(x, y, z) {
-  let e = createSprite(x, y, 60, 40);
+  let e = createSprite(x, y, 80, 53);
   e.addAnimation("painright", "assets/playercorpse/painright.gif")
   e.addAnimation("painleft", "assets/playercorpse/painleft.gif")
   e.addAnimation("fallenright", "assets/playercorpse/fallenright.gif")
@@ -672,7 +675,7 @@ function nextLevel() {
     }
   }
 
-  while (enemies.length < 7) {
+  while (enemies.length < 5) {
     spawnEnemy();
   }
 
