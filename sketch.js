@@ -6,6 +6,7 @@ let enemy3;
 let enemy4;
 let enemy5;
 let enemy6;
+let enemy7;
 let enemies;
 let dead;
 let coinFlips;
@@ -25,6 +26,8 @@ let score = 0;
 let hasStarted = false;
 let paused = false;
 let turnCount = 0;
+let levelCount = 1;
+let oldLevelCount = levelCount;
 
 function setup() {
   bg = loadImage("assets/background.jpg");
@@ -37,12 +40,13 @@ function setup() {
   enemy4 = createEnemy();
   enemy5 = createEnemy();
   enemy6 = createEnemy();
+  enemy7 = createEnemy();
 
-  enemies = [enemy1, enemy2, enemy3, enemy4, enemy5, enemy6];
+  enemies = [enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, enemy7];
   coinFlips = [Math.random(), Math.random(), Math.random(), Math.random(),
-               Math.random(), Math.random()];
+               Math.random(), Math.random(), Math.random()];
 
-  setInterval(enemyJump, 133);
+  setInterval(enemyJump, 137);
   setInterval(reroll, 700);
 
   dead = [];
@@ -80,13 +84,18 @@ function setup() {
 function draw() {
 
   if (hasStarted === true) {
+
     background(bg);
     drawSprites();
+
+
+    //BASIC INTERFACE SETUP
 
     textSize(16);
     textFont("courier");
     fill(255, 255, 255);
-    let scoreText = text("Enemies Bested: " + score, 810, 30);
+    let scoreText = text("Enemies Bested: " + score, 820, 20);
+    let levelText = text("Level " + levelCount, 20, 20);
 
     if (paused === true) {
       textSize(30);
@@ -95,7 +104,8 @@ function draw() {
       let pauseText = text("Paused", 450, 285);
     }
 
-    //BOARD SETUP
+
+    //PLATFORM COLLISION
 
     platforms.forEach((plat) => {
       if (player.collide(plat)) {
@@ -108,87 +118,28 @@ function draw() {
       };
     });
 
-    //ENEMY BEHAVIOR
-
     enemies.forEach((e) => {
-      e.velocity.y += 0.3;
-      e.maxSpeed = 4;
-    });
-
-    enemies.forEach((e) => {
-      platforms.forEach((plat) => {
-        if (e.collide(plat)) {
-          if ((e.position.x < plat.position.x - (plat.originalWidth / 2)) ||
-              (e.position.x > plat.position.x + (plat.originalWidth / 2))) {
-            e.bounce(plat);
-            e.velocity.y += 0.4;
-          } else
-          if (e.position.y < plat.position.y - 5) {
-            e.velocity.y = 0;
-          } else {
-            e.bounce(plat);
-          }
-        };
+        platforms.forEach((plat) => {
+          if (e.collide(plat)) {
+            if ((e.position.x < plat.position.x - (plat.originalWidth / 2)) ||
+                (e.position.x > plat.position.x + (plat.originalWidth / 2))) {
+              e.bounce(plat);
+              e.velocity.y += 0.4;
+            } else
+            if (e.position.y < plat.position.y - 5) {
+              e.velocity.y = 0;
+            } else {
+              e.bounce(plat);
+            }
+          };
+        });
       });
-    });
-
-    enemies.forEach((e) => {
-      if (e.position.x < 0) {
-        e.position.x = 1000;
-      }
-
-      if (e.position.x > 1000 ) {
-        e.position.x = 0;
-      }
-    })
-
-    enemies.forEach((e) => {
-      if (e.position.y > 550) {
-        e.velocity.y -= 7;
-      }
-    })
 
 
-    coinFlips.forEach((c, i) => {
-      if (enemies[i] === undefined) {
-        return null
-      } else if (c < 0.1) {
-        enemies[i].velocity.x += 0.20;
-        enemies[i].changeAnimation("runright");
-      } else if (c < 0.2) {
-        enemies[i].velocity.x += 0.30;
-        enemies[i].changeAnimation("runright");
-      } else if (c < 0.3) {
-        enemies[i].velocity.x += 0.35;
-        enemies[i].changeAnimation("runright");
-      } else if (c < 0.4) {
-        enemies[i].velocity.x += 0.40;
-        enemies[i].changeAnimation("runright");
-      } else if (c < 0.5) {
-        enemies[i].velocity.x += 0.45;
-        enemies[i].changeAnimation("runright");
-      } else if (c < 0.6) {
-        enemies[i].velocity.x -= 0.20;
-        enemies[i].changeAnimation("runleft");
-      } else if (c < 0.7) {
-        enemies[i].velocity.x -= 0.30;
-        enemies[i].changeAnimation("runleft");
-      } else if (c < 0.8) {
-        enemies[i].velocity.x -= 0.35;
-        enemies[i].changeAnimation("runleft");
-      } else if (c < 0.9) {
-        enemies[i].velocity.x -= 0.40;
-        enemies[i].changeAnimation("runleft");
-      } else if (c < 1) {
-        enemies[i].velocity.x -= 0.45;
-        enemies[i].changeAnimation("runleft");
-      }
-    });
+    //PLAYER MOVEMENT & CONTROLS
 
-    //PLAYER MOVEMENT, CONTROLS
-
-    player.velocity.y += 0.10;
-    player.maxSpeed = 4.5;
+    player.velocity.y += 0.23;
+    player.maxSpeed = 5.5;
 
     if (player.position.x < 0) {
       player.position.x = 1000;
@@ -199,7 +150,7 @@ function draw() {
     }
 
     if (keyWentDown(" ") || keyWentDown(UP_ARROW) || keyWentDown("w")) {
-      player.velocity.y -= 9;
+      player.velocity.y -= 20;
       if (playerStatus === "right") {
         player.changeAnimation("jumpright");
       } else if (playerStatus === "left") {
@@ -243,18 +194,95 @@ function draw() {
       }
     };
 
-    // COMBAT
+
+    //ENEMY MOVEMENT
+
+    enemies.forEach((e) => {
+      e.velocity.y += 0.3;
+      e.maxSpeed = 4.5;
+    });
+
+    enemies.forEach((e) => {
+      platforms.forEach((plat) => {
+        if (e.collide(plat)) {
+          if ((e.position.x < plat.position.x - (plat.originalWidth / 2)) ||
+              (e.position.x > plat.position.x + (plat.originalWidth / 2))) {
+            e.bounce(plat);
+            e.velocity.y += 0.4;
+          } else
+          if (e.position.y < plat.position.y - 5) {
+            e.velocity.y = 0;
+          } else {
+            e.bounce(plat);
+          }
+        };
+      });
+    });
+
+    enemies.forEach((e) => {
+      if (e.position.x < 0) {
+        e.position.x = 1000;
+      }
+
+      if (e.position.x > 1000 ) {
+        e.position.x = 0;
+      }
+    })
+
+    enemies.forEach((e) => {
+      if (e.position.y > 550) {
+        e.velocity.y -= 7;
+      }
+    })
+
+
+    coinFlips.forEach((c, i) => {
+      if (enemies[i] === undefined) {
+        return null
+      } else if (c < 0.1) {
+        enemies[i].velocity.x += 0.20;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.2) {
+        enemies[i].velocity.x += 0.30;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.3) {
+        enemies[i].velocity.x += 0.35;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.4) {
+        enemies[i].velocity.x += 0.40;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.5) {
+        enemies[i].velocity.x += 0.45;
+        enemies[i].changeAnimation("runright");
+      } else if (c < 0.6) {
+        enemies[i].velocity.x -= 0.20;
+        enemies[i].changeAnimation("runleft");
+      } else if (c < 0.7) {
+        enemies[i].velocity.x -= 0.30;
+        enemies[i].changeAnimation("runleft");
+      } else if (c < 0.8) {
+        enemies[i].velocity.x -= 0.35;
+        enemies[i].changeAnimation("runleft");
+      } else if (c < 0.9) {
+        enemies[i].velocity.x -= 0.40;
+        enemies[i].changeAnimation("runleft");
+      } else if (c < 1) {
+        enemies[i].velocity.x -= 0.45;
+        enemies[i].changeAnimation("runleft");
+      }
+    });
+
+
+    //COMBAT
 
     enemies.forEach((e, i) => {
       if (e.collide(player)) {
         if (player.position.y < e.position.y - 25) {
           if (e.velocity.x > 0) {
-            createDeadEnemy(e.position.x, e.position.y, "right")
+            createDeadEnemy(e.position.x, e.position.y, "right", player);
           } else {
-            createDeadEnemy(e.position.x, e.position.y, "left")
+            createDeadEnemy(e.position.x, e.position.y, "left", player);
           }
-          setTimeout(clearDead, 7000);
-          score += 1;
           e.remove();
           enemies.splice(i, 1);
         } else if (e.position.y < player.position.y - 25) {
@@ -274,8 +302,21 @@ function draw() {
             player.velocity.x += 40;
           }
         }
+
+        if (e.position.y > 600) {
+          if (e.velocity.x > 0) {
+            createDeadEnemy(e.position.x, e.position.y, "right", player);
+          } else {
+            createDeadEnemy(e.position.x, e.position.y, "left", player);
+          }
+          e.remove();
+          enemies.splice(i, 1);
+        }
       }
     });
+
+
+    //DEATH BEHAVIOR
 
     if (dead.length > 0) {
       dead.forEach((d) => {
@@ -287,21 +328,34 @@ function draw() {
           if (d[0].collide(player)) {
             let dead_idx = dead.indexOf(d);
             d[0].remove();
+            d[2] = true;
+            score += 1;
             dead.splice(dead_idx, dead_idx + 1);
-            console.log(dead.length)
-            console.log(enemies.length)
           }
+        }
+
+        if (d[0].position.y > 600) {
+          let dead_idx = dead.indexOf(d);
+          d[0].remove();
+          d[2] = true;
+          score += 1;
+          dead.splice(dead_idx, dead_idx + 1);
         }
       })
     }
 
     if (enemies.length === 0 && dead.length === 0) {
       setTimeout(nextLevel, 2000);
+      setTimeout(incrementLevel, 10000);
     }
 
   } else {
+
     background(bg);
     drawSprites();
+
+
+    //INTERFACE SETUP
 
     textSize(16);
     textFont("courier");
@@ -322,11 +376,12 @@ function draw() {
     fill(255, 255, 255);
     let nameTag = text("~a game by reed gaines~", 330, 310);
 
-    //ENEMY BEHAVIOR
+
+    //ENEMY MOVEMENT
 
     enemies.forEach((e) => {
       e.velocity.y += 0.3;
-      e.maxSpeed = 4;
+      e.maxSpeed = 4.5;
     });
 
     enemies.forEach((e) => {
@@ -399,28 +454,17 @@ function draw() {
       }
     });
   }
-
-
 }
 
-function createEnemy(x = 600, y = 400) {
-  let e = createSprite(x, y, 60, 40);
-  e.addAnimation("normalright", "assets/enemy/readyright.gif");
-  e.addAnimation("runright", "assets/enemy/runright1.png", "assets/enemy/runright2.png",
-                "assets/enemy/runright3.png", "assets/enemy/runright4.png");
-  e.addAnimation("jumpright", "assets/enemy/attackright.gif");
-  e.addAnimation("normalleft", "assets/enemy/readyleft.gif");
-  e.addAnimation("runleft", "assets/enemy/runleft1.png", "assets/enemy/runleft2.png",
-                "assets/enemy/runleft3.png", "assets/enemy/runleft4.png");
-  e.addAnimation("jumpleft", "assets/enemy/attackleft.gif");
 
-  return e;
+//UTILITY FUNCTIONS
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function reroll() {
-  let randomchange = Math.floor(Math.random() * enemies.length);
-  coinFlips[randomchange] = Math.random();
-}
+
+//ENEMY MOVEMENT FUNCTIONS
 
 function enemyJump() {
   enemies.forEach((e) => {
@@ -437,36 +481,51 @@ function enemyJump() {
   })
 }
 
-function createDeadEnemy(x, y, z) {
+function reroll() {
+  let randomchange = Math.floor(Math.random() * enemies.length);
+  coinFlips[randomchange] = Math.random();
+}
+
+
+//ENEMY BIRTH/DEATH FUNCTIONS
+
+function createEnemy(x = 600, y = 400) {
+  let e = createSprite(x, y, 60, 40);
+
+  e.addAnimation("normalright", "assets/enemy/readyright.gif");
+  e.addAnimation("runright", "assets/enemy/runright1.png", "assets/enemy/runright2.png",
+                "assets/enemy/runright3.png", "assets/enemy/runright4.png");
+  e.addAnimation("jumpright", "assets/enemy/attackright.gif");
+  e.addAnimation("normalleft", "assets/enemy/readyleft.gif");
+  e.addAnimation("runleft", "assets/enemy/runleft1.png", "assets/enemy/runleft2.png",
+                "assets/enemy/runleft3.png", "assets/enemy/runleft4.png");
+  e.addAnimation("jumpleft", "assets/enemy/attackleft.gif");
+
+  return e;
+}
+
+function createDeadEnemy(x, y, z, p) {
   let e = createSprite(x, y, 60, 40);
   e.addAnimation("painright", "assets/enemycorpse/painright.gif")
   e.addAnimation("painleft", "assets/enemycorpse/painleft.gif")
   e.addAnimation("fallenright", "assets/enemycorpse/fallenright.gif")
   e.addAnimation("fallenleft", "assets/enemycorpse/fallenleft.gif")
+  e.addAnimation("blinkleft", "assets/playercorpse/fallenleft.gif")
+  e.addAnimation("blinkright", "assets/playercorpse/fallenright.gif")
+  let fullE = [e];
 
   if (z === "left") {
     e.changeAnimation("painleft");
-    dead.push([e, "left"]);
+    fullE.push("left");
   } else {
     e.changeAnimation("painright");
-    dead.push([e, "right"]);
+    fullE.push("right")
   }
-}
 
-function createDeadPlayer(x, y, z) {
-  let e = createSprite(x, y, 60, 40);
-  e.addAnimation("painright", "assets/playercorpse/painright.gif")
-  e.addAnimation("painleft", "assets/playercorpse/painleft.gif")
-  e.addAnimation("fallenright", "assets/playercorpse/fallenright.gif")
-  e.addAnimation("fallenleft", "assets/playercorpse/fallenleft.gif")
+  fullE.push(false);
+  dead.push(fullE);
 
-  if (z === "left") {
-    e.changeAnimation("painleft");
-    dead.push([e, "left", "player"]);
-  } else {
-    e.changeAnimation("painright");
-    dead.push([e, "right", "player"]);
-  }
+  clearDead(fullE, p);
 }
 
 function deadEnemyFall(d) {
@@ -485,22 +544,66 @@ function deadEnemyFall(d) {
   });
 }
 
-function clearDead() {
-  if (dead.length > 0) {
-    if (dead[0].length === 2) {
-      dead[0][0].remove();
-      spawnEnemy(dead[0][0].position.x, dead[0][0].position.y);
-      dead.shift();
+
+//DEATH FUNCTIONS
+
+async function clearDead(e, p) {
+  if (e) {
+    if (e.length === 3) {
+      await sleep(3000);
+      if (e[1] === "left") {
+        e[0].changeAnimation("blinkleft");
+        await sleep(750);
+        e[0].changeAnimation("blinkleft");
+        await sleep(750);
+        e[0].changeAnimation("blinkleft");
+        await sleep(750);
+        e[0].changeAnimation("blinkleft");
+        await sleep(400);
+        e[0].changeAnimation("blinkleft");
+        await sleep(400);
+        e[0].changeAnimation("blinkleft");
+        await sleep(400);
+        e[0].changeAnimation("blinkleft");
+      } else {
+        e[0].changeAnimation("blinkright");
+        await sleep(750);
+        e[0].changeAnimation("blinkright");
+        await sleep(750);
+        e[0].changeAnimation("blinkright");
+        await sleep(750);
+        e[0].changeAnimation("blinkright");
+        await sleep(400);
+        e[0].changeAnimation("blinkright");
+        await sleep(400);
+        e[0].changeAnimation("blinkright");
+        await sleep(400);
+        e[0].changeAnimation("blinkright");
+      }
+
+      if (e[2] === false) {
+        e[0].remove();
+        spawnEnemy(e[0].position.x, e[0].position.y);
+        ind = dead.indexOf(e);
+        dead.splice(ind, ind + 1);
+      }
     }
     else {
-      dead[0][0].remove();
-      dead.shift();
+      await sleep(500);
+      if (e[0]) {
+        e[0].remove();
+        ind = dead.indexOf(e);
+        dead.splice(ind, ind + 1);
+      }
     }
+  } else {
+    ind = dead.indexOf(e);
+    dead.splice(ind, ind + 1);
   }
 }
 
 function spawnEnemy(x = 600, y = 400) {
-  if (enemies.length < 6) {
+  if (enemies.length < 7) {
     let nextEnemy = createEnemy(x, y);
     enemies.push(nextEnemy);
   }
@@ -529,18 +632,54 @@ function mousePressed() {
   }
 }
 
+function createDeadPlayer(x, y, z) {
+  let e = createSprite(x, y, 60, 40);
+  e.addAnimation("painright", "assets/playercorpse/painright.gif")
+  e.addAnimation("painleft", "assets/playercorpse/painleft.gif")
+  e.addAnimation("fallenright", "assets/playercorpse/fallenright.gif")
+  e.addAnimation("fallenleft", "assets/playercorpse/fallenleft.gif")
+  let fullE = [e];
+
+  if (z === "left") {
+    e.changeAnimation("painleft");
+    fullE.push("left");
+    dead.push(fullE);
+  } else {
+    e.changeAnimation("painright");
+    fullE.push("right");
+    dead.push(fullE);
+  }
+
+  clearDead(fullE, null);
+}
+
 
 function restart() {
   hasStarted = false;
-  while (enemies.length < 6) {
-    spawnEnemy();
-  }
+  oldLevelCount = 1;
+  nextLevel();
   turnCount += 1;
   score = 0;
 }
 
 function nextLevel() {
-  while (enemies.length < 6) {
+
+  if (hasStarted === false) {
+    levelCount = 1;
+  } else {
+    while (levelCount < oldLevelCount + 1) {
+      levelCount += 1;
+    }
+  }
+
+  while (enemies.length < 7) {
     spawnEnemy();
+  }
+
+}
+
+function incrementLevel() {
+  while (oldLevelCount < levelCount) {
+    oldLevelCount += 1;
   }
 }
