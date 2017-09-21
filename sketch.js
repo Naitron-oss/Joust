@@ -376,8 +376,8 @@ function draw() {
     //ENEMY MOVEMENT
 
     enemies.forEach((e) => {
-      e.velocity.y += 0.3;
-      e.maxSpeed = 4.5;
+      e.velocity.y += 0.25;
+      e.maxSpeed = 5;
     });
 
     enemies.forEach((e) => {
@@ -465,17 +465,27 @@ function sleep(ms) {
 function enemyJump() {
   enemies.forEach((e) => {
     coin = Math.random();
-    if (e.position.y < 200) {
-      if (coin < 0.30) {
+    if (e.position.y < 100) {
+      if (coin < 0.15) {
+        e.velocity.y -= 7
+      }
+    }
+    else if (e.position.y < 200) {
+      if (coin < 0.25) {
+        e.velocity.y -= 7
+      }
+    } else if (e.position.y < 300) {
+      if (coin < 0.35) {
         e.velocity.y -= 8
       }
     } else if (e.position.y < 400) {
       if (coin < 0.45) {
-        e.velocity.y -= 10
+        e.velocity.y -= 8
       }
+    }
     } else {
-      if (coin < 0.55) {
-        e.velocity.y -= 12
+      if (coin < 0.6) {
+        e.velocity.y -= 8
       }
     }
   })
