@@ -43,7 +43,7 @@ function setup() {
                Math.random()];
 
   setInterval(enemyJump, 140);
-  setInterval(reroll, 500);
+  setInterval(reroll, 700);
 
   dead = [];
 
@@ -482,7 +482,6 @@ function enemyJump() {
       if (coin < 0.45) {
         e.velocity.y -= 8
       }
-    }
     } else {
       if (coin < 0.6) {
         e.velocity.y -= 8
