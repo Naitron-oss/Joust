@@ -482,7 +482,33 @@ function enemyJump() {
   enemies.forEach((e) => {
     coin = Math.random();
     if (player) {
-      if (player.position.y <= e.position.y) {
+      if (player.position.y <= 65) {
+        if (e.position.y < 100) {
+          if (coin < 0.1) {
+            e.velocity.y -= 7
+          }
+        } else if (e.position.y < 150) {
+          if (coin < 0.15) {
+            e.velocity.y -= 7
+          }
+        } else if (e.position.y < 250) {
+          if (coin < 0.25) {
+            e.velocity.y -= 7
+          }
+        } else if (e.position.y < 350) {
+          if (coin < 0.3) {
+            e.velocity.y -= 7
+          }
+        } else if (e.position.y < 450) {
+          if (coin < 0.45) {
+            e.velocity.y -= 8
+          }
+        } else {
+          if (coin < 0.5) {
+            e.velocity.y -= 8
+          }
+        }
+      } else if (player.position.y <= e.position.y) {
         if (e.position.y < 100) {
           if (coin < 0.15) {
             e.velocity.y -= 7
