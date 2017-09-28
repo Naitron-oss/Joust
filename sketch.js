@@ -481,40 +481,68 @@ function sleep(ms) {
 function enemyJump() {
   enemies.forEach((e) => {
     coin = Math.random();
-    if (player.position.y <= e.position.y) {
-      if (e.position.y < 100) {
-        if (coin < 0.15) {
-          e.velocity.y -= 7
-        }
-      } else if (e.position.y < 150) {
-        if (coin < 0.2) {
-          e.velocity.y -= 8
-        }
-      } else if (e.position.y < 250) {
-        if (coin < 0.4) {
-          e.velocity.y -= 8
-        }
-      } else if (e.position.y < 350) {
-        if (coin < 0.45) {
-          e.velocity.y -= 9
-        }
-      } else if (e.position.y < 450) {
-        if (coin < 0.55) {
-          e.velocity.y -= 9
+    if (player) {
+      if (player.position.y <= e.position.y) {
+        if (e.position.y < 100) {
+          if (coin < 0.15) {
+            e.velocity.y -= 7
+          }
+        } else if (e.position.y < 150) {
+          if (coin < 0.2) {
+            e.velocity.y -= 8
+          }
+        } else if (e.position.y < 250) {
+          if (coin < 0.4) {
+            e.velocity.y -= 8
+          }
+        } else if (e.position.y < 350) {
+          if (coin < 0.45) {
+            e.velocity.y -= 9
+          }
+        } else if (e.position.y < 450) {
+          if (coin < 0.55) {
+            e.velocity.y -= 9
+          }
+        } else {
+          if (coin < 0.6) {
+            e.velocity.y -= 9
+          }
         }
       } else {
-        if (coin < 0.6) {
-          e.velocity.y -= 9
+        if (e.position.y < 100) {
+          if (coin < 0.1) {
+            e.velocity.y -= 7
+          }
+        } else if (e.position.y < 150) {
+          if (coin < 0.15) {
+            e.velocity.y -= 7
+          }
+        } else if (e.position.y < 250) {
+          if (coin < 0.3) {
+            e.velocity.y -= 7
+          }
+        } else if (e.position.y < 350) {
+          if (coin < 0.35) {
+            e.velocity.y -= 7
+          }
+        } else if (e.position.y < 450) {
+          if (coin < 0.45) {
+            e.velocity.y -= 8
+          }
+        } else {
+          if (coin < 0.5) {
+            e.velocity.y -= 8
+          }
         }
       }
     } else {
       if (e.position.y < 100) {
         if (coin < 0.1) {
-          e.velocity.y -= 7
+          e.velocity.y -= 6
         }
       } else if (e.position.y < 150) {
         if (coin < 0.15) {
-          e.velocity.y -= 7
+          e.velocity.y -= 6
         }
       } else if (e.position.y < 250) {
         if (coin < 0.3) {
