@@ -296,7 +296,7 @@ function draw() {
           } else {
             createDeadPlayer(player.position.x, player.position.y, "left");
           }
-          setTimeout(restart, 3000);
+          setTimeout(restart, 750);
         } else {
           if (e.position.x > player.position.x) {
             e.velocity.x += 40;
@@ -351,6 +351,11 @@ function draw() {
     if (enemies.length === 0 && dead.length === 0) {
       setTimeout(nextLevel, 2000);
       setTimeout(incrementLevel, 10000);
+    }
+
+    if (player.position.y > 700) {
+      player.remove();
+      setTimeout(restart, 750);
     }
 
   } else {
@@ -418,6 +423,9 @@ function draw() {
     enemies.forEach((e) => {
       if (e.position.y > 550) {
         e.velocity.y -= 7;
+      }
+      if (e.position.y > 700) {
+        e.remove();
       }
     })
 
