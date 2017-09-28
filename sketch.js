@@ -43,7 +43,7 @@ function setup() {
                Math.random()];
 
   setInterval(enemyJump, 143);
-  setInterval(reroll, 700);
+  setInterval(reroll, 300);
 
   dead = [];
 
@@ -488,15 +488,15 @@ function enemyJump() {
             e.velocity.y -= 7
           }
         } else if (e.position.y < 150) {
-          if (coin < 0.2) {
+          if (coin < 0.25) {
             e.velocity.y -= 8
           }
         } else if (e.position.y < 250) {
-          if (coin < 0.4) {
+          if (coin < 0.45) {
             e.velocity.y -= 8
           }
         } else if (e.position.y < 350) {
-          if (coin < 0.45) {
+          if (coin < 0.5) {
             e.velocity.y -= 9
           }
         } else if (e.position.y < 450) {
@@ -518,11 +518,11 @@ function enemyJump() {
             e.velocity.y -= 7
           }
         } else if (e.position.y < 250) {
-          if (coin < 0.3) {
+          if (coin < 0.25) {
             e.velocity.y -= 7
           }
         } else if (e.position.y < 350) {
-          if (coin < 0.35) {
+          if (coin < 0.3) {
             e.velocity.y -= 7
           }
         } else if (e.position.y < 450) {
@@ -687,7 +687,7 @@ async function clearDead(e, p) {
 }
 
 function spawnEnemy(x = null, y = null) {
-  var coin = Math.random();
+  let coin = Math.random();
   if (enemies.length < 5) {
     if (x && y) {
       let nextEnemy = createEnemy(x, y);
