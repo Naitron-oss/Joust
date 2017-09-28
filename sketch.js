@@ -473,14 +473,14 @@ function sleep(ms) {
 function enemyJump() {
   enemies.forEach((e) => {
     coin = Math.random();
-    if (dead.length === 0) {
+    if (player.position.y <= e.position.y) {
       if (e.position.y < 100) {
         if (coin < 0.15) {
           e.velocity.y -= 7
         }
       } else if (e.position.y < 150) {
         if (coin < 0.2) {
-          e.velocity.y -= 7
+          e.velocity.y -= 8
         }
       } else if (e.position.y < 250) {
         if (coin < 0.4) {
@@ -514,7 +514,7 @@ function enemyJump() {
         }
       } else if (e.position.y < 350) {
         if (coin < 0.35) {
-          e.velocity.y -= 8
+          e.velocity.y -= 7
         }
       } else if (e.position.y < 450) {
         if (coin < 0.45) {
@@ -650,10 +650,27 @@ async function clearDead(e, p) {
   }
 }
 
-function spawnEnemy(x = 600, y = 400) {
+function spawnEnemy(x = null, y = null) {
+  var coin = Math.random();
   if (enemies.length < 5) {
-    let nextEnemy = createEnemy(x, y);
-    enemies.push(nextEnemy);
+    if (x && y) {
+      let nextEnemy = createEnemy(x, y);
+      enemies.push(nextEnemy);
+    } else {
+      if (coin < 0.25) {
+        let nextEnemy = createEnemy(100, 300);
+        enemies.push(nextEnemy);
+      } else if (coin < 0.5) {
+        let nextEnemy = createEnemy(100, 100);
+        enemies.push(nextEnemy);
+      } else if (coin < 0.7) {
+        let nextEnemy = createEnemy(900, 300);
+        enemies.push(nextEnemy);
+      } else {
+        let nextEnemy = createEnemy(900, 100);
+        enemies.push(nextEnemy);
+      }
+    }
   }
 }
 
@@ -671,6 +688,17 @@ function mousePressed() {
                         "assets/player/runleft3.png", "assets/player/runleft4.png");
     player.addAnimation("jumpright", "assets/player/attackright.gif");
     player.addAnimation("jumpleft", "assets/player/attackleft.gif");
+
+    enemies.forEach((e) => {
+      e.remove();
+    })
+
+    enemies = [];
+
+    while (enemies.length < 5) {
+      spawnEnemy();
+    }
+
     hasStarted = true;
   } else {
     if (paused === false) {
